@@ -31,6 +31,7 @@ and [provider](../extensions/git-http-provider/README.md).
 - [Development](maintainers/development.md) - local setup, checks and repository conventions.
 - [Documentation maintenance](maintainers/documentation.md) - canonical-source and link rules.
 - [Release security](release-security.md) - release gates, checksums, SBOM and attestations.
+- [Organization migration to Codellei](organization-migration.md) - phased transfer plan, identity cutover, trusted publishing and verification.
 
 ## Reference implementations
 
