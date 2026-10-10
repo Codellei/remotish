@@ -97,8 +97,10 @@ Open VSX under the `hrashton` namespace. Fixture, Browser RPC, and Git HTTP prov
 GitHub-release-only.
 
 Publishing uses Open VSX trusted publishing rather than a stored registry token. Configure the
-existing `hrashton` namespace with `Codellei/remotish` and `.github/workflows/release.yml` as a trusted GitHub
-Actions publisher, including the `open-vsx` environment when configuring the trust policy. The
+`hrashton` namespace with `Codellei/remotish` and `.github/workflows/release.yml` as a trusted GitHub
+Actions publisher, including the `open-vsx` environment when configuring the trust policy. Open VSX
+requires an active version of each extension before its trusted publisher can be registered, so the
+first publication must be bootstrapped separately under release approval. The
 workflow grants only `contents: read` and `id-token: write` to the publish job and invokes
 `pnpm exec ovsx publish --trusted-publishing --skip-duplicate`; no `OVSX_PAT` secret is expected. `--skip-duplicate` makes a partially completed tagged release safe to rerun if one extension was already accepted before a later publish or registry smoke failed.
 
