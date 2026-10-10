@@ -5,7 +5,7 @@
 ## Start here
 
 1. Read [the migration runbook](../organization-migration.md) and this handoff README.
-2. Paste [CODEX_PROMPT.md](CODEX_PROMPT.md) into Codex as the initial task. Work from this repository's protected `master`, not from an unrelated checkout.
+2. Paste [CODEX_PROMPT.md](CODEX_PROMPT.md) into Codex as the initial task. Base work on this repository's current `master` (verify effective protection), not an unrelated checkout.
 3. Use [WORK_ITEMS.md](WORK_ITEMS.md) for separate implementation PRs and required acceptance checks.
 4. Check [REFERENCE_MAP.md](REFERENCE_MAP.md) before changing references or extension identities.
 5. Use [VALIDATION.md](VALIDATION.md) to record test evidence.
