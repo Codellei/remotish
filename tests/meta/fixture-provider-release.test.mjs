@@ -17,7 +17,7 @@ const providerLicense = await readFile(
 test('fixture provider release identity is repository-owned and licensed', () => {
   assert.equal(providerManifest.publisher, 'hrashton');
   assert.equal(providerManifest.private, true);
-  assert.equal(providerManifest.repository?.url, 'https://github.com/HRAshton/remotish.git');
+  assert.equal(providerManifest.repository?.url, 'https://github.com/Codellei/remotish.git');
   assert.match(providerLicense, /^Zero-Clause BSD$/mu);
 });
 

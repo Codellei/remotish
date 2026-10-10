@@ -1,10 +1,10 @@
 # Remotish
 
-[![CI](https://github.com/HRAshton/remotish/actions/workflows/ci.yml/badge.svg)](https://github.com/HRAshton/remotish/actions/workflows/ci.yml)
-[![Codecov](https://codecov.io/gh/HRAshton/remotish/graph/badge.svg)](https://app.codecov.io/gh/HRAshton/remotish)
-[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/HRAshton/remotish/badge)](https://scorecard.dev/viewer/?uri=github.com/HRAshton/remotish)
+[![CI](https://github.com/Codellei/remotish/actions/workflows/ci.yml/badge.svg)](https://github.com/Codellei/remotish/actions/workflows/ci.yml)
+[![Codecov](https://codecov.io/gh/Codellei/remotish/graph/badge.svg)](https://app.codecov.io/gh/Codellei/remotish)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/Codellei/remotish/badge)](https://scorecard.dev/viewer/?uri=github.com/Codellei/remotish)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/14965/badge)](https://www.bestpractices.dev/projects/14965)
-[![REUSE status](https://api.reuse.software/badge/github.com/HRAshton/remotish)](https://api.reuse.software/info/github.com/HRAshton/remotish)
+[![REUSE status](https://api.reuse.software/badge/github.com/Codellei/remotish)](https://api.reuse.software/info/github.com/Codellei/remotish)
 [![License: 0BSD](https://img.shields.io/badge/license-0BSD-blue.svg)](LICENSE)
 
 **Turn a remote repository-like backend into a native editable VS Code / Code-OSS workspace.**
@@ -123,12 +123,12 @@ CI covers the supported Node.js 22 and 24 lines, browser execution, packaged VSI
 
 Release artifacts are built with pinned dependencies, checksums, CycloneDX SBOM generation and provenance attestations. Details are in [Release security](docs/release-security.md).
 
-Copyright and licensing metadata follows the [REUSE specification](https://api.reuse.software/info/github.com/HRAshton/remotish) and is machine-verifiable.
+Copyright and licensing metadata follows the [REUSE specification](https://api.reuse.software/info/github.com/Codellei/remotish) and is machine-verifiable.
 
 ## Get involved
 
-- [Releases](https://github.com/HRAshton/remotish/releases) - download published releases.
-- [Issues](https://github.com/HRAshton/remotish/issues) - report bugs or propose enhancements.
+- [Releases](https://github.com/Codellei/remotish/releases) - download published releases.
+- [Issues](https://github.com/Codellei/remotish/issues) - report bugs or propose enhancements.
 - [Contributing](CONTRIBUTING.md) - development setup and contribution requirements.
 - [Security](SECURITY.md) - report suspected vulnerabilities privately.
 

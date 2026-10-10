@@ -11,11 +11,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/HRAshton/remotish.git"
+    "url": "https://github.com/Codellei/remotish.git"
   },
-  "homepage": "https://github.com/HRAshton/remotish#readme",
+  "homepage": "https://github.com/Codellei/remotish#readme",
   "bugs": {
-    "url": "https://github.com/HRAshton/remotish/issues"
+    "url": "https://github.com/Codellei/remotish/issues"
   },
   "extensionKind": [
     "workspace"
