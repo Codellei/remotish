@@ -1,6 +1,6 @@
 # Copy-paste brief for Codex
 
-> Work in `HRAshton/remotish` on a fresh topic branch from the current `master`. First read `docs/organization-migration.md` and the complete `docs/codellei-handoff/` pack, especially `REFERENCE_MAP.md` and `WORK_ITEMS.md`.
+> Work in `HRAshton/remotish` on a fresh topic branch from the current `master` (verify branch protections). First read `docs/organization-migration.md` and the complete `docs/codellei-handoff/` pack, especially `REFERENCE_MAP.md` and `WORK_ITEMS.md`.
 >
 > Goal: prepare **reviewable, fail-closed source changes** so Remotish can be transferred natively to `Codellei/remotish` by an authorized GitHub administrator. Do not perform the transfer or release.
 >
