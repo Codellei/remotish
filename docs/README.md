@@ -32,6 +32,7 @@ and [provider](../extensions/git-http-provider/README.md).
 - [Documentation maintenance](maintainers/documentation.md) - canonical-source and link rules.
 - [Release security](release-security.md) - release gates, checksums, SBOM and attestations.
 - [Organization migration to Codellei](organization-migration.md) - phased transfer plan, identity cutover, trusted publishing and verification.
+- [Codex migration handoff](codellei-handoff/README.md) - agent brief, source-change work items, human cutover checklist, and evidence templates.
 
 ## Reference implementations
 
