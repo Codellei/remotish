@@ -62,10 +62,13 @@ jobs:
             exit 1
           fi
 
-          if ! jq -e --arg actor "$GITHUB_ACTOR" 'type == "array" and any(.[]; type == "string" and ascii_downcase == ($actor | ascii_downcase))' <<< "$STAGING_DEPLOYERS" >/dev/null 2>&1; then
-            echo "The actor is not configured as an authorized staging deployer." >&2
-            exit 1
-          fi
+          # A re-run retains GITHUB_ACTOR, so also authorize the person starting the re-run.
+          for actor in "$GITHUB_ACTOR" "$GITHUB_TRIGGERING_ACTOR"; do
+            if ! jq -e --arg actor "$actor" 'type == "array" and any(.[]; type == "string" and ascii_downcase == ($actor | ascii_downcase))' <<< "$STAGING_DEPLOYERS" >/dev/null 2>&1; then
+              echo "The original or re-running actor is not configured as an authorized staging deployer." >&2
+              exit 1
+            fi
+          done
 
       - name: Resolve trusted PR
         id: pr

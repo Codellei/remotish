@@ -17,7 +17,8 @@ test('staging authorizes a configured human on a protected default branch before
   assert.match(guard, /GITHUB_REF_NAME.*DEFAULT_BRANCH/u);
   assert.match(guard, /REF_PROTECTED.*true/u);
   assert.match(guard, /STAGING_DEPLOYERS: \$\{\{ vars\.STAGING_DEPLOYERS \}\}/u);
-  assert.match(guard, /jq -e --arg actor "\$GITHUB_ACTOR"/u);
+  assert.match(guard, /for actor in "\$GITHUB_ACTOR" "\$GITHUB_TRIGGERING_ACTOR"; do/u);
+  assert.match(guard, /jq -e --arg actor "\$actor"/u);
   assert.match(guard, /type == "array" and any\(\.\[\]; type == "string" and ascii_downcase/u);
   assert.doesNotMatch(guard, /GITHUB_ACTOR.*REPOSITORY_OWNER/u);
 });

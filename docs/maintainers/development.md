@@ -120,7 +120,7 @@ The repository has one shared GitHub Pages staging environment. It is a trusted-
 The Remotish host is always included; the fixture, browser RPC, GitHub and Git HTTP providers can be selected independently in the dispatch form. The workflow builds that exact trusted PR head, reads the pinned `package.json#codeOss.version`, selects the highest published `v<version>-web.N` release from `Codellei/code-oss-static-web`, verifies the release archive digest, and injects the selected PR-built browser extensions into the qualified static distribution. A missing matching COSW release fails the deployment rather than falling back to another host version.
 
 
-Running the workflow again refreshes staging from the PR's current head. Running it for another PR replaces the shared staging site. The deployment comment records the tested PR head and COSW release. GitHub Pages must be configured to use GitHub Actions as its source.
+Running the workflow again refreshes staging from the PR's current head, but only if both the original dispatcher and the person requesting the re-run are in `STAGING_DEPLOYERS`. GitHub re-runs use the original workflow commit, so do not re-run staging runs created before this authorization check was deployed. Running it for another PR replaces the shared staging site. The deployment comment records the tested PR head and COSW release. GitHub Pages must be configured to use GitHub Actions as its source.
 
 ## Release work
 
