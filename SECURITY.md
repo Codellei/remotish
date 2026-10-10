@@ -4,7 +4,7 @@
 
 Use GitHub's private vulnerability reporting:
 
-https://github.com/HRAshton/remotish/security/advisories/new
+https://github.com/Codellei/remotish/security/advisories/new
 
 Do not disclose a suspected vulnerability in a public issue, discussion, pull request, or other public channel.
 

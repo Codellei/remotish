@@ -33,14 +33,14 @@ Release consumers can verify integrity and provenance with the release's `SHA256
 
 ```sh
 sha256sum -c SHA256SUMS
-gh attestation verify remotish.vsix -R HRAshton/remotish
-gh attestation verify remotish-fixture-provider.vsix -R HRAshton/remotish
-gh attestation verify remotish-browser-rpc-provider.vsix -R HRAshton/remotish
-gh attestation verify remotish-github-provider.vsix -R HRAshton/remotish
-gh attestation verify remotish-git-http-provider.vsix -R HRAshton/remotish
+gh attestation verify remotish.vsix -R Codellei/remotish
+gh attestation verify remotish-fixture-provider.vsix -R Codellei/remotish
+gh attestation verify remotish-browser-rpc-provider.vsix -R Codellei/remotish
+gh attestation verify remotish-github-provider.vsix -R Codellei/remotish
+gh attestation verify remotish-git-http-provider.vsix -R Codellei/remotish
 ```
 
-Use the repository/release coordinates that correspond to the artifact you downloaded if the project is mirrored or renamed.
+These commands verify new releases signed by `Codellei/remotish`. Historical releases retain their original `HRAshton/remotish` attestation identity; verify those artifacts with `-R HRAshton/remotish` and their original bundles.
 
 ## VSIX artifact gate
 
@@ -86,7 +86,7 @@ Do not report suspected vulnerabilities in a public issue. Follow [SECURITY.md](
 
 `@remotish/adapter-sdk` is the public npm package for third-party adapter authors. Tag releases publish it only after the package/release gates succeed. The workflow checks that the git tag, root version and adapter SDK version agree, builds the SDK, inspects the npm tarball with `npm pack --dry-run`, and publishes the scoped package with public access.
 
-Publishing is designed for npm Trusted Publishing with GitHub Actions OIDC. Configure the `@remotish/adapter-sdk` package on npmjs.com with this repository and `.github/workflows/release.yml` as its trusted publisher, and protect the GitHub `npm` environment as appropriate. No long-lived `NPM_TOKEN` is expected in the workflow.
+Publishing is designed for npm Trusted Publishing with GitHub Actions OIDC. After the transfer, configure the existing `@remotish/adapter-sdk` package on npmjs.com with `Codellei/remotish` and `.github/workflows/release.yml` as its trusted publisher, and protect the GitHub `npm` environment as appropriate. No long-lived `NPM_TOKEN` is expected in the workflow.
 
 For a beta version such as `0.1.0-beta.1`, publish with the `beta` npm dist-tag rather than replacing `latest`. Stable versions can use the default `latest` dist-tag.
 
@@ -97,8 +97,10 @@ Open VSX under the `hrashton` namespace. Fixture, Browser RPC, and Git HTTP prov
 GitHub-release-only.
 
 Publishing uses Open VSX trusted publishing rather than a stored registry token. Configure the
-`hrashton` namespace with this repository and `.github/workflows/release.yml` as a trusted GitHub
-Actions publisher, including the `open-vsx` environment when configuring the trust policy. The
+`hrashton` namespace with `Codellei/remotish` and `.github/workflows/release.yml` as a trusted GitHub
+Actions publisher, including the `open-vsx` environment when configuring the trust policy. Open VSX
+requires an active version of each extension before its trusted publisher can be registered, so the
+first publication must be bootstrapped separately under release approval. The
 workflow grants only `contents: read` and `id-token: write` to the publish job and invokes
 `pnpm exec ovsx publish --trusted-publishing --skip-duplicate`; no `OVSX_PAT` secret is expected. `--skip-duplicate` makes a partially completed tagged release safe to rerun if one extension was already accepted before a later publish or registry smoke failed.
 

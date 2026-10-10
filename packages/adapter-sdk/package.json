@@ -25,14 +25,14 @@
     "code-oss",
     "source-control"
   ],
-  "homepage": "https://github.com/HRAshton/remotish#readme",
+  "homepage": "https://github.com/Codellei/remotish#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/HRAshton/remotish.git",
+    "url": "git+https://github.com/Codellei/remotish.git",
     "directory": "packages/adapter-sdk"
   },
   "bugs": {
-    "url": "https://github.com/HRAshton/remotish/issues"
+    "url": "https://github.com/Codellei/remotish/issues"
   },
   "publishConfig": {
     "access": "public"

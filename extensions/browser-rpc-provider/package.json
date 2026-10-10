@@ -8,7 +8,7 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/HRAshton/remotish.git"
+    "url": "https://github.com/Codellei/remotish.git"
   },
   "engines": {
     "vscode": "^1.139.1"
