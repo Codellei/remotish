@@ -218,6 +218,8 @@ jobs:
             sleep 5
           done
 
+      - run: pnpm build
+
       - run: pnpm bundle:demo:tests
 
       - name: Prepare registry VSIX smoke
