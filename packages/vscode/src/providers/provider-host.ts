@@ -106,7 +106,7 @@ export class RemotishProviderHost implements vscode.Disposable {
         await vscode.commands.executeCommand(
           'vscode.openFolder',
           createWorkingUri(result.workspaceId),
-          false,
+          { forceReuseWindow: true },
         );
         return result;
       }),

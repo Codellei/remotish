@@ -190,7 +190,7 @@ function registerOpenCommand(context: vscode.ExtensionContext): vscode.Disposabl
     await vscode.commands.executeCommand(
       'vscode.openFolder',
       vscode.Uri.from({ scheme: 'remotish', authority: workspaceId, path: '/' }),
-      false,
+      { forceReuseWindow: true },
     );
   });
 }

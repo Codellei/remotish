@@ -41,6 +41,7 @@ test('history provider reports detached remote-ref refresh failures', async (t) 
 
 test('exported history constructors accept their original arguments', async () => {
   const workspace = {
+    capabilities: { commits: false },
     branch: 'main',
     baseRevision: 'C1',
     onDidChange: () => ({ dispose() {} }),
@@ -61,6 +62,47 @@ test('exported history constructors accept their original arguments', async () =
   const scm = { get: () => ({ sourceControl }) };
   const manager = new HistoryManager(registry, scm);
   assert.ok(sourceControl.historyProvider instanceof RemotishHistoryProvider);
+  assert.equal(sourceControl.actionButton, undefined);
   await settle();
   manager.dispose();
+  assert.equal(sourceControl.historyProvider, undefined);
+});
+
+test('controlled commit actions respect individual adapter capabilities', async () => {
+  for (const [capabilities, expectedCommands] of [
+    [{ commits: true }, []],
+    [{ commits: true, forceWithLease: true }, ['remotish.commitAndPushForceWithLease']],
+    [
+      { commits: true, forceWithLease: true, amend: true },
+      ['remotish.commitAndPushForceWithLease', 'remotish.amendAndPushForceWithLease'],
+    ],
+  ]) {
+    const sourceControl = {};
+    const workspace = {
+      capabilities,
+      branch: 'main',
+      baseRevision: 'C1',
+      onDidChange: () => ({ dispose() {} }),
+      async listBranches() {
+        return [];
+      },
+    };
+    const registry = {
+      list: () => [{ id: 'fixture' }],
+      require: () => ({ workspace }),
+      onDidChange: () => ({ dispose() {} }),
+    };
+    const manager = new HistoryManager(registry, { get: () => ({ sourceControl }) });
+    const button = sourceControl.actionButton;
+    assert.equal(button?.command.command, 'remotish.commitAndPush');
+    assert.deepEqual(button?.command.arguments, ['fixture']);
+    assert.deepEqual(
+      button.secondaryCommands?.flat().map((entry) => entry.command) ?? [],
+      expectedCommands,
+    );
+    await settle();
+    manager.dispose();
+    assert.equal(sourceControl.actionButton, undefined);
+    assert.equal(sourceControl.historyProvider, undefined);
+  }
 });

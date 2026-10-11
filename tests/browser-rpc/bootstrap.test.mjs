@@ -237,7 +237,8 @@ test('concurrent bootstrap reads wait for an endpoint, persist before navigation
   const navigated = new Promise((resolve) => {
     signalNavigation = resolve;
   });
-  const originalOpen = vscode.commands.registerCommand('vscode.openFolder', (uri) => {
+  const originalOpen = vscode.commands.registerCommand('vscode.openFolder', (uri, options) => {
+    assert.deepEqual(options, { forceReuseWindow: true });
     events.push('navigate');
     assert.match(uri.toString(), /^remotish:\/\/browser-rpc-[0-9a-f]{32}\/$/u);
     signalNavigation();

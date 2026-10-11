@@ -20,10 +20,9 @@ export class HistoryManager implements vscode.Disposable {
 
   dispose(): void {
     this.registrySubscription.dispose();
-    for (const entry of this.entries.values()) {
-      entry.dispose();
+    for (const workspaceId of [...this.entries.keys()]) {
+      this.remove(workspaceId);
     }
-    this.entries.clear();
   }
 
   private handleRegistryEvent(event: WorkspaceRegistryEvent): void {
@@ -51,6 +50,33 @@ export class HistoryManager implements vscode.Disposable {
       }
     });
     sourceControl.historyProvider = provider;
+    if (workspace.capabilities.commits) {
+      const secondaryCommands: vscode.Command[] = [];
+      if (workspace.capabilities.forceWithLease) {
+        secondaryCommands.push({
+          command: 'remotish.commitAndPushForceWithLease',
+          title: 'Commit & Push (Force with Lease)',
+          arguments: [workspaceId],
+        });
+      }
+      if (workspace.capabilities.amend) {
+        secondaryCommands.push({
+          command: 'remotish.amendAndPushForceWithLease',
+          title: 'Amend & Push (Force with Lease)',
+          arguments: [workspaceId],
+        });
+      }
+      sourceControl.actionButton = {
+        command: {
+          command: 'remotish.commitAndPush',
+          title: 'Commit & Push',
+          shortTitle: 'Commit & Push',
+          arguments: [workspaceId],
+        },
+        ...(secondaryCommands.length > 0 ? { secondaryCommands: [secondaryCommands] } : {}),
+        enabled: true,
+      };
+    }
     this.entries.set(workspaceId, provider);
   }
 
@@ -58,6 +84,7 @@ export class HistoryManager implements vscode.Disposable {
     const sourceControl = this.scm.get(workspaceId)?.sourceControl;
     if (sourceControl) {
       delete sourceControl.historyProvider;
+      delete sourceControl.actionButton;
     }
     this.entries.get(workspaceId)?.dispose();
     this.entries.delete(workspaceId);

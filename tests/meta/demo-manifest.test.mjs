@@ -95,7 +95,11 @@ test('revert is an inline action for files in the Changes group', () => {
 });
 
 test('controlled demo enables only the proposal-sensitive history APIs', () => {
-  assert.deepEqual(manifest.enabledApiProposals, ['scmHistoryProvider', 'timeline']);
+  assert.deepEqual(manifest.enabledApiProposals, [
+    'scmActionButton',
+    'scmHistoryProvider',
+    'timeline',
+  ]);
 });
 
 test('Open VSX host manifest strips proposed APIs from the controlled demo', () => {

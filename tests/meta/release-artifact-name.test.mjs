@@ -14,6 +14,7 @@ const prepareVsixSmoke = await readFile(
 
 test('host VSIX uses the Remotish product artifact name everywhere release tooling consumes it', () => {
   const releaseVsix = rootManifest.scripts?.['release:vsix'] ?? '';
+  const controlled = rootManifest.scripts?.['release:controlled-host:vsix'] ?? '';
   const prepareVsix = rootManifest.scripts?.['prepare:vscode-web-vsix'] ?? '';
 
   assert.equal(
@@ -23,6 +24,21 @@ test('host VSIX uses the Remotish product artifact name everywhere release tooli
   assert.equal(
     prepareVsix,
     'node scripts/prepare-vsix-smoke.mjs artifacts/remotish.vsix artifacts/remotish-fixture-provider.vsix artifacts/remotish-browser-rpc-provider.vsix artifacts/remotish-github-provider.vsix artifacts/remotish-git-http-provider.vsix',
+  );
+  assert.match(controlled, /package-registry-vsix\.mjs apps\/demo-web/u);
+  assert.match(controlled, /remotish-controlled-host\.vsix/u);
+  assert.match(
+    rootManifest.scripts?.['test:controlled-host:vsix'] ?? '',
+    /verify-controlled-host-vsix\.mjs/u,
+  );
+  assert.match(releaseWorkflow, /sha256sum[\s\S]*remotish-controlled-host\.vsix/u);
+  assert.match(
+    releaseWorkflow,
+    /Attest build provenance[\s\S]*artifacts\/remotish-controlled-host\.vsix/u,
+  );
+  assert.match(
+    releaseWorkflow,
+    /gh release create[\s\S]*artifacts\/remotish-controlled-host\.vsix/u,
   );
   assert.match(prepareVsixSmoke, /process\.argv\[2\] \?\? 'artifacts\/remotish\.vsix'/u);
 
