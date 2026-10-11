@@ -39,6 +39,12 @@
         "command": "remotish.demo.openFixture",
         "title": "Remotish Demo: Open Fixture Repository"
       }
+    ],
+    "viewsWelcome": [
+      {
+        "view": "workbench.explorer.emptyView",
+        "contents": "[Open Fixture Repository](command:remotish.demo.openFixture)"
+      }
     ]
   },
   "dependencies": {

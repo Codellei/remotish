@@ -53,7 +53,13 @@
           "scope": "application"
         }
       }
-    }
+    },
+    "viewsWelcome": [
+      {
+        "view": "workbench.explorer.emptyView",
+        "contents": "[Open Git HTTP Repository](command:remotish.gitHttp.open)"
+      }
+    ]
   },
   "remotish": {
     "provider": true,

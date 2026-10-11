@@ -34,7 +34,10 @@ test('GitHub provider is a browser-only anonymous public repository extension', 
   assert.deepEqual(manifest.categories, ['SCM Providers', 'Other']);
   assert.ok(manifest.keywords.includes('github'));
   assert.ok(manifest.keywords.includes('open vsx'));
-  assert.deepEqual(manifest.activationEvents, ['onFileSystem:remotish-github']);
+  assert.deepEqual(manifest.activationEvents, [
+    'onFileSystem:remotish-github',
+    'onCommand:remotish.github.open',
+  ]);
   assert.deepEqual(manifest.capabilities.untrustedWorkspaces, { supported: true });
   assert.deepEqual(manifest.remotish, {
     provider: true,

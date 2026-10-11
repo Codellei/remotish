@@ -56,6 +56,17 @@ export class Uri {
     return new Uri(parts);
   }
 
+  static parse(value) {
+    const parsed = new URL(value);
+    return new Uri({
+      scheme: parsed.protocol.slice(0, -1),
+      authority: parsed.host,
+      path: parsed.pathname,
+      query: parsed.search.slice(1),
+      fragment: parsed.hash.slice(1),
+    });
+  }
+
   static joinPath(base, ...segments) {
     const suffix = segments
       .map((segment) => stripSurroundingSlashes(String(segment)))

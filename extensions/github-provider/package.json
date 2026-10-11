@@ -19,7 +19,8 @@
   },
   "browser": "./dist/extension.js",
   "activationEvents": [
-    "onFileSystem:remotish-github"
+    "onFileSystem:remotish-github",
+    "onCommand:remotish.github.open"
   ],
   "capabilities": {
     "virtualWorkspaces": true,
@@ -50,5 +51,19 @@
     "virtual filesystem",
     "source control",
     "open vsx"
-  ]
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "remotish.github.open",
+        "title": "Remotish GitHub: Open Repository"
+      }
+    ],
+    "viewsWelcome": [
+      {
+        "view": "workbench.explorer.emptyView",
+        "contents": "[Open GitHub Repository](command:remotish.github.open)"
+      }
+    ]
+  }
 }

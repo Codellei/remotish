@@ -137,6 +137,43 @@ A browser-only provider with a `browser` entry point and no Node-only entry poin
 
 Static Code-OSS Web deployments naturally satisfy this constraint when both Remotish and the provider are browser extensions.
 
+## Empty Explorer entry points
+
+A provider extension can optionally add an **Open ... Repository** button to VS Code's
+built-in **No Folder Opened** Explorer view. Use the stable `contributes.viewsWelcome` extension
+point with `view: "workbench.explorer.emptyView"`; a command link on its own line appears as a
+button. Welcome content is declarative and contributed independently by each installed provider.
+
+```json
+{
+  "activationEvents": ["onCommand:remotish.example.open"],
+  "contributes": {
+    "commands": [
+      { "command": "remotish.example.open", "title": "Remotish Example: Open Repository" }
+    ],
+    "viewsWelcome": [
+      {
+        "view": "workbench.explorer.emptyView",
+        "contents": "[Open Example Repository](command:remotish.example.open)"
+      }
+    ]
+  }
+}
+```
+
+The command gathers and validates provider-specific repository input, then uses the existing
+provider bootstrap or versioned Remotish repository commands. It must not store secrets in
+bootstrap URIs or descriptors. Provider selection and its UI stay in the provider extension;
+`@remotish/adapter-sdk` does not acquire a VS Code UI contract. The host does not need to
+hardcode installed providers. VS Code controls relative ordering of contributions from different
+extensions; `viewsWelcome` does not promise a fixed order after **Open Folder**.
+
+The GitHub provider prompts for a public `owner/repository` and opens its existing temporary
+`remotish-github://` bootstrap folder. Git HTTP reuses `remotish.gitHttp.open` and offers setup
+when its URL is not configured. The fixture provider contributes its demo command in development
+builds. Browser RPC does not contribute an open button yet: it has no generic repository picker,
+and its endpoint pairing must remain provider-owned. It continues to support bootstrap links.
+
 ## Provider-to-host commands
 
 Provider extensions do not need a Remotish TypeScript host API. Provider-to-Remotish operations use stable, versioned VS Code commands from the SDK:

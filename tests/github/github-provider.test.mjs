@@ -1,11 +1,15 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import * as vscode from 'vscode';
 import {
   createGitHubBootstrapUri,
   decodeGitHubBootstrapUri,
   restoreGitHubWorkspace,
 } from '../../extensions/github-provider/build/bootstrap.js';
-import { createGitHubProvider } from '../../extensions/github-provider/build/extension.js';
+import {
+  activate,
+  createGitHubProvider,
+} from '../../extensions/github-provider/build/extension.js';
 
 function createMemento(values = new Map()) {
   return {
@@ -110,4 +114,54 @@ test('github restoration returns only the persisted repository identity', () => 
     () => restoreGitHubWorkspace(context, workspaceId),
     /Invalid GitHub restoration record/u,
   );
+});
+
+test('GitHub open command reuses the public bootstrap workspace', async (t) => {
+  vscode.__test.reset();
+  const context = createContext();
+  const provider = activate(context);
+  t.after(() => {
+    for (const item of context.subscriptions) {
+      item.dispose();
+    }
+  });
+  assert.equal(provider.id, 'github');
+
+  vscode.__test.inputBoxResponses.push(' octocat/Hello-World ');
+  await vscode.commands.executeCommand('remotish.github.open');
+  assert.equal(vscode.__test.externalCommands.length, 1);
+  assert.equal(vscode.__test.externalCommands[0].command, 'vscode.openFolder');
+  const [uri, reuseWindow] = vscode.__test.externalCommands[0].args;
+  assert.equal(uri.toString(), 'remotish-github://open/v1/octocat/Hello-World');
+  assert.equal(reuseWindow, false);
+});
+
+test('GitHub open command ignores cancellation and rejects malformed repository input', async (t) => {
+  vscode.__test.reset();
+  const context = createContext();
+  activate(context);
+  t.after(() => {
+    for (const item of context.subscriptions) {
+      item.dispose();
+    }
+  });
+
+  await vscode.commands.executeCommand('remotish.github.open');
+  assert.equal(vscode.__test.externalCommands.length, 0);
+  assert.equal(vscode.__test.errorMessages.length, 0);
+
+  const invalid = [
+    '',
+    'octocat',
+    'octocat/Hello-World/extra',
+    'https://github.com/octocat/Hello-World',
+    'octocat/%48ello-World',
+    'octocat/Hello World',
+  ];
+  for (const input of invalid) {
+    vscode.__test.inputBoxResponses.push(input);
+    await vscode.commands.executeCommand('remotish.github.open');
+  }
+  assert.equal(vscode.__test.externalCommands.length, 0);
+  assert.equal(vscode.__test.errorMessages.length, invalid.length);
 });
