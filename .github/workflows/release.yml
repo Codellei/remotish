@@ -281,3 +281,14 @@ jobs:
             --title "$GITHUB_REF_NAME" \
             --verify-tag \
             "${release_flags[@]}"
+
+  notify-cosw-demo:
+    name: Notify COSW Remotish demo of verified release
+    needs: release
+    permissions:
+      contents: read
+    uses: Codellei/cosw-demo/.github/workflows/notify-release.yml@10f090f712940ea6c8fdd97979bc70cedfafa6db
+    with:
+      app-client-id: ${{ vars.RELEASE_APP_CLIENT_ID }}
+    secrets:
+      app-private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
