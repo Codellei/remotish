@@ -88,13 +88,17 @@ Do not report suspected vulnerabilities in a public issue. Follow [SECURITY.md](
 
 Publishing is designed for npm Trusted Publishing with GitHub Actions OIDC. After the transfer, configure the existing `@remotish/adapter-sdk` package on npmjs.com with `Codellei/remotish` and `.github/workflows/release.yml` as its trusted publisher, and protect the GitHub `npm` environment as appropriate. No long-lived `NPM_TOKEN` is expected in the workflow.
 
-For a beta version such as `0.1.0-beta.1`, publish with the `beta` npm dist-tag rather than replacing `latest`. Stable versions can use the default `latest` dist-tag.
+Prerelease channels do not replace `latest`: beta versions publish with the `beta` npm dist-tag, and release candidates such as `1.0.0-rc.1` publish with `next`. Stable versions use the default `latest` dist-tag.
 
 ## Open VSX publishing
 
 Release tags publish only the stable-API Remotish host and the anonymous public GitHub provider to
 Open VSX under the `hrashton` namespace. Fixture, Browser RPC, and Git HTTP provider VSIXes remain
-GitHub-release-only.
+GitHub-release-only. The public host and GitHub provider VSIXes are packaged with
+`vsce package --pre-release` whenever their release version has a prerelease suffix (including
+`-beta.*` and `-rc.*`), and without that flag for stable versions. The packaged-VSIX smoke gate
+inspects both archives' `extension.vsixmanifest` prerelease property; this prevents an RC from
+being published as a regular Open VSX update. The npm `next` dist-tag is a separate channel.
 
 Publishing uses Open VSX trusted publishing rather than a stored registry token. Configure the
 `hrashton` namespace with `Codellei/remotish` and `.github/workflows/release.yml` as a trusted GitHub

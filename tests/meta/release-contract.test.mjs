@@ -4,6 +4,8 @@ import { constants } from 'node:fs';
 import { access, readdir, readFile } from 'node:fs/promises';
 import { test } from 'node:test';
 
+import { vscePackageArgs } from '../../scripts/package-registry-vsix.mjs';
+
 const rootManifest = JSON.parse(await readFile(new URL('../../package.json', import.meta.url)));
 const exactVersion = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/u;
 const packagePaths = [
@@ -334,9 +336,44 @@ test('adapter SDK is configured as the only public npm package', async () => {
   assert.doesNotMatch(releaseWorkflow, /packages\/vscode.*npm publish/u);
   assert.match(releaseWorkflow, /npm pack --dry-run/u);
   assert.match(releaseWorkflow, /publish_args=\(--access public\)/u);
+  assert.match(releaseWorkflow, /publish_args\+=\(--tag next\)/u);
   assert.match(releaseWorkflow, /publish_args\+=\(--tag beta\)/u);
   assert.match(releaseWorkflow, /npm publish/u);
   assert.doesNotMatch(releaseWorkflow, /NPM_TOKEN/u);
+});
+
+test('public Open VSX VSIXes use the prerelease channel only for prerelease versions', async () => {
+  const flags = [
+    'package',
+    '--no-dependencies',
+    '--allow-missing-repository',
+    '--out',
+    '../remotish.vsix',
+  ];
+  assert.deepEqual(vscePackageArgs('1.0.0-rc.1', '../remotish.vsix'), [...flags, '--pre-release']);
+  assert.deepEqual(vscePackageArgs('0.1.0-beta.15', '../remotish.vsix'), [
+    ...flags,
+    '--pre-release',
+  ]);
+  assert.deepEqual(vscePackageArgs('1.0.0', '../remotish.vsix'), flags);
+  assert.throws(() => vscePackageArgs('latest', '../remotish.vsix'), /exact release version/u);
+
+  assert.ok(
+    rootManifest.scripts['release:vsix'].includes(
+      'node scripts/package-registry-vsix.mjs artifacts/open-vsx-host ../remotish.vsix',
+    ),
+  );
+  assert.ok(
+    rootManifest.scripts['release:github-provider:vsix'].includes(
+      'node scripts/package-registry-vsix.mjs artifacts/github-provider-vsix ../remotish-github-provider.vsix',
+    ),
+  );
+  const smokeSource = await readFile(
+    new URL('../../scripts/prepare-vsix-smoke.mjs', import.meta.url),
+    'utf8',
+  );
+  assert.ok(smokeSource.includes('verifyRegistryReleaseChannel(hostVsix, smokeRoot)'));
+  assert.ok(smokeSource.includes('verifyRegistryReleaseChannel(vsix, archiveRoot)'));
 });
 
 test('pnpm owns release versioning and CI uses the pinned package manager', async () => {
