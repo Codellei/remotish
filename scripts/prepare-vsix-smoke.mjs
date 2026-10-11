@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process';
-import { cpSync, mkdirSync, rmSync } from 'node:fs';
+import { cpSync, mkdirSync, readFileSync, rmSync } from 'node:fs';
 import { basename, dirname, resolve } from 'node:path';
 
 const hostVsix = resolve(process.argv[2] ?? 'artifacts/remotish.vsix');
@@ -29,10 +29,30 @@ function extractVsix(archive, destination) {
   );
 }
 
+function verifyRegistryReleaseChannel(vsix, unpackedRoot) {
+  const manifest = JSON.parse(
+    readFileSync(resolve(unpackedRoot, 'extension/package.json'), 'utf8'),
+  );
+  const vsixManifest = readFileSync(resolve(unpackedRoot, 'extension.vsixmanifest'), 'utf8');
+  const hasPrereleaseFlag =
+    /<Property\s+Id="Microsoft\.VisualStudio\.Code\.PreRelease"\s+Value="true"\s*\/>/u.test(
+      vsixManifest,
+    );
+  const expectedPrerelease = /^\d+\.\d+\.\d+-[0-9A-Za-z.-]+$/u.test(manifest.version);
+  if (hasPrereleaseFlag !== expectedPrerelease) {
+    throw new Error(
+      `${basename(vsix)}: prerelease metadata does not match version ${manifest.version}.`,
+    );
+  }
+}
+
 function unpackProviderVsix(vsix, destination) {
   const archiveRoot = resolve(smokeRoot, `.unpack-${basename(vsix, '.vsix')}`);
   mkdirSync(archiveRoot, { recursive: true });
   extractVsix(vsix, archiveRoot);
+  if (basename(vsix) === 'remotish-github-provider.vsix') {
+    verifyRegistryReleaseChannel(vsix, archiveRoot);
+  }
   cpSync(resolve(archiveRoot, 'extension'), destination, { recursive: true });
   rmSync(archiveRoot, { recursive: true, force: true });
 }
@@ -40,6 +60,7 @@ function unpackProviderVsix(vsix, destination) {
 rmSync(smokeRoot, { recursive: true, force: true });
 mkdirSync(smokeRoot, { recursive: true });
 extractVsix(hostVsix, smokeRoot);
+verifyRegistryReleaseChannel(hostVsix, smokeRoot);
 mkdirSync(dirname(resolve(extensionRoot, 'dist/test/suite/vsix.js')), { recursive: true });
 cpSync(testBundle, resolve(extensionRoot, 'dist/test/suite/vsix.js'));
 cpSync(bootstrapTestBundle, resolve(extensionRoot, 'dist/test/suite/bootstrap.js'));

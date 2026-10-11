@@ -18,7 +18,7 @@ test('host VSIX uses the Remotish product artifact name everywhere release tooli
 
   assert.equal(
     releaseVsix,
-    'pnpm build && pnpm bundle:open-vsx-host && pnpm --dir artifacts/open-vsx-host exec vsce package --no-dependencies --allow-missing-repository --out ../remotish.vsix',
+    'pnpm build && pnpm bundle:open-vsx-host && node scripts/package-registry-vsix.mjs artifacts/open-vsx-host ../remotish.vsix',
   );
   assert.equal(
     prepareVsix,

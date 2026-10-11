@@ -94,7 +94,11 @@ Prerelease channels do not replace `latest`: beta versions publish with the `bet
 
 Release tags publish only the stable-API Remotish host and the anonymous public GitHub provider to
 Open VSX under the `hrashton` namespace. Fixture, Browser RPC, and Git HTTP provider VSIXes remain
-GitHub-release-only.
+GitHub-release-only. The public host and GitHub provider VSIXes are packaged with
+`vsce package --pre-release` whenever their release version has a prerelease suffix (including
+`-beta.*` and `-rc.*`), and without that flag for stable versions. The packaged-VSIX smoke gate
+inspects both archives' `extension.vsixmanifest` prerelease property; this prevents an RC from
+being published as a regular Open VSX update. The npm `next` dist-tag is a separate channel.
 
 Publishing uses Open VSX trusted publishing rather than a stored registry token. Configure the
 `hrashton` namespace with `Codellei/remotish` and `.github/workflows/release.yml` as a trusted GitHub
