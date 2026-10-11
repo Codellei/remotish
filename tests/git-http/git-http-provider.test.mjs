@@ -89,6 +89,7 @@ test('provider validates URL-only descriptors and keeps desktop token out of res
     repository: { url: URL },
   });
   assert.equal(vscode.__test.externalCommands.at(-1).command, 'vscode.openFolder');
+  assert.deepEqual(vscode.__test.externalCommands.at(-1).args[1], { forceReuseWindow: true });
   state.records.set(`remotish.gitHttp.restore.v1.${ID}`, { version: 1, url: URL, token: 'leak' });
   await assert.rejects(provider.restoreWorkspace(ID), /restoration/);
 });

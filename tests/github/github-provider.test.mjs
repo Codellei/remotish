@@ -131,9 +131,9 @@ test('GitHub open command reuses the public bootstrap workspace', async (t) => {
   await vscode.commands.executeCommand('remotish.github.open');
   assert.equal(vscode.__test.externalCommands.length, 1);
   assert.equal(vscode.__test.externalCommands[0].command, 'vscode.openFolder');
-  const [uri, reuseWindow] = vscode.__test.externalCommands[0].args;
+  const [uri, options] = vscode.__test.externalCommands[0].args;
   assert.equal(uri.toString(), 'remotish-github://open/v1/octocat/Hello-World');
-  assert.equal(reuseWindow, false);
+  assert.deepEqual(options, { forceReuseWindow: true });
 });
 
 test('GitHub open command ignores cancellation and rejects malformed repository input', async (t) => {

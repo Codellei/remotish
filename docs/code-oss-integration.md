@@ -20,6 +20,7 @@ Stable VS Code types come from the local `@types/vscode` package under `types/vs
 The base `@remotish/vscode` package and the published Open VSX host are proposal-free. The repository-controlled `apps/demo-web` host additionally composes `@remotish/vscode-history`, which uses:
 
 ```text
+scmActionButton
 scmHistoryProvider
 timeline
 ```
@@ -28,7 +29,7 @@ Proposal declaration files for controlled-host qualification are committed under
 
 `@remotish/vscode-history` isolates SCM history and Timeline APIs so host-version changes do not affect the adapter SDK, core, or public VS Code host. It remains available for products that control their Code OSS build and proposal policy, but it is not a dependency of the Open VSX host artifact.
 
-Release packaging derives a public manifest from `apps/demo-web` with the proposal declarations and history dependency removed, then bundles `apps/demo-web/src/extension-stable.ts`. `pnpm test:vscode-web:stable` exercises the proposal-free base composition, while the controlled demo and runtime-stub/history tests continue to qualify the optional history integration.
+Release packaging derives a public manifest from `apps/demo-web` with the proposal declarations and history dependency removed, then bundles `apps/demo-web/src/extension-stable.ts`. The tagged GitHub release also includes a distinct `remotish-controlled-host.vsix` (same extension ID, alternative installation) bundling native SCM history, file Timeline and the commit button/dropdown. This artifact is for controlled Code OSS deployments that explicitly grant the three proposals; never install both host variants together. `pnpm test:vscode-web:stable` exercises the proposal-free base composition; source-extension Web tests and runtime-stub/history tests qualify the controlled integration. `pnpm test:controlled-host:vsix` verifies the *packaged* controlled host's manifest, browser bundle and prerelease metadata. Stock `vscode-test-web` cannot grant proposed APIs to a packaged host, so a production host (such as a separately configured COSW derivative) must independently qualify the packaged VSIX with scoped proposal grants before deployment.
 
 ## Updating the host version
 

@@ -125,7 +125,7 @@ test('VS Code host contract keeps version, engines, types, proposals, and Web sm
   const stableSmokeManifest = JSON.parse(
     await readFile(new URL('../../apps/demo-web/src/test/stable/package.json', import.meta.url)),
   );
-  const proposals = ['scmHistoryProvider', 'timeline'];
+  const proposals = ['scmActionButton', 'scmHistoryProvider', 'timeline'];
 
   assert.match(hostVersion ?? '', exactVersion);
   assert.match(hostCommit ?? '', /^[0-9a-f]{40}$/u);
@@ -158,6 +158,7 @@ test('VS Code host contract keeps version, engines, types, proposals, and Web sm
 
   const declarationPaths = {
     vscode: '../../types/vscode/index.d.ts',
+    scmActionButton: '../../types/vscode-proposed/vscode.proposed.scmActionButton.d.ts',
     scmHistoryProvider: '../../types/vscode-proposed/vscode.proposed.scmHistoryProvider.d.ts',
     timeline: '../../types/vscode-proposed/vscode.proposed.timeline.d.ts',
   };

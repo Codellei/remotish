@@ -171,7 +171,7 @@ export class GitHubBootstrapFileSystem implements vscode.FileSystemProvider, vsc
       await vscode.commands.executeCommand(
         'vscode.openFolder',
         vscode.Uri.from({ scheme: 'remotish', authority: workspaceId, path: '/' }),
-        false,
+        { forceReuseWindow: true },
       );
     });
     this.finalizationTail = finalize.then(

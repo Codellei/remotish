@@ -47,7 +47,9 @@
     "release:git-http-provider:vsix": "shx rm -rf extensions/git-http-provider/dist && pnpm build && pnpm bundle:git-http-provider:extension && shx cp THIRD_PARTY_NOTICES.md extensions/git-http-provider/dist/THIRD_PARTY_NOTICES.md && shx mkdir -p artifacts && pnpm --dir extensions/git-http-provider exec vsce package --no-dependencies --allow-missing-repository --out ../../artifacts/remotish-git-http-provider.vsix",
     "bundle:github-provider:extension": "esbuild extensions/github-provider/src/extension.ts --bundle --platform=browser --format=cjs --external:vscode --outfile=extensions/github-provider/dist/extension.js",
     "release:github-provider:vsix": "shx rm -rf extensions/github-provider/dist artifacts/github-provider-vsix && pnpm build && pnpm bundle:github-provider:extension && node scripts/prepare-github-provider-vsix.mjs && node scripts/package-registry-vsix.mjs artifacts/github-provider-vsix ../remotish-github-provider.vsix",
-    "bundle:open-vsx-host": "node scripts/prepare-open-vsx-host.mjs && esbuild apps/demo-web/src/extension-stable.ts --bundle --platform=browser --format=cjs --external:vscode --outfile=artifacts/open-vsx-host/dist/extension.js"
+    "bundle:open-vsx-host": "node scripts/prepare-open-vsx-host.mjs && esbuild apps/demo-web/src/extension-stable.ts --bundle --platform=browser --format=cjs --external:vscode --outfile=artifacts/open-vsx-host/dist/extension.js",
+    "release:controlled-host:vsix": "pnpm build && pnpm bundle:demo:extension && node scripts/package-registry-vsix.mjs apps/demo-web ../../artifacts/remotish-controlled-host.vsix",
+    "test:controlled-host:vsix": "pnpm release:controlled-host:vsix && node scripts/verify-controlled-host-vsix.mjs artifacts/remotish-controlled-host.vsix"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.14",
@@ -93,6 +95,7 @@
     "commit": "04c0d99f4fb0d8afe6ce4f0c58e31e183ac3e4b1",
     "declarationBlobs": {
       "vscode": "936c69a82672dd770d3d5cfc36d6af0344646671",
+      "scmActionButton": "96b8b1c0e53b0e8aa2fcb251a507ebf524a596d1",
       "scmHistoryProvider": "ef9d93342cff5e8b77d9e2068fabede4743311cc",
       "timeline": "ee925aab8aaae88d0387219153fd92c44e6db38f"
     }
