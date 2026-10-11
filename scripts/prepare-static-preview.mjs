@@ -4,6 +4,9 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const root = new URL('../', import.meta.url);
 
+const CONTROLLED_HOST_ID = 'hrashton.remotish';
+const CONTROLLED_PROPOSALS = ['scmActionButton', 'scmHistoryProvider', 'timeline'];
+
 const providerPaths = {
   'fixture-provider': 'extensions/fixture-provider/',
   'browser-rpc-provider': 'extensions/browser-rpc-provider/',
@@ -40,6 +43,7 @@ export async function prepareStaticPreview({
 
   await updateAdditionalExtensionIndex(distPath, extensions);
   await updateExtensionIndex(distPath, extensions);
+  await updateScopedProposalGrants(distPath, extensions);
   await updateConnectSources(distPath, connectOrigins);
   await writeFile(resolve(distPath, 'robots.txt'), 'User-agent: *\nDisallow: /\n');
 
@@ -76,6 +80,45 @@ async function installExtension(distPath, source) {
     browserCompatible: true,
     license: manifest.license ?? null,
   };
+}
+
+/**
+ * Grants only the proposals reviewed for the Remotish controlled host.
+ * The canonical COSW release and other extensions remain unmodified.
+ */
+export function withScopedProposalGrants(bootstrap, manifest) {
+  if (manifest.publisher !== 'hrashton' || manifest.name !== 'remotish') {
+    throw new Error('Only the Remotish host can receive staging API proposal grants.');
+  }
+
+  const declared = manifest.enabledApiProposals;
+  if (
+    !Array.isArray(declared) ||
+    declared.length !== CONTROLLED_PROPOSALS.length ||
+    !CONTROLLED_PROPOSALS.every((proposal) => declared.includes(proposal))
+  ) {
+    throw new Error('Remotish staging host must declare exactly the approved API proposals.');
+  }
+
+  const marker = '  productConfiguration: {\n';
+  if (bootstrap.split(marker).length !== 2 || bootstrap.includes('extensionEnabledApiProposals')) {
+    throw new Error('Unexpected COSW product configuration: refusing to inject API grants.');
+  }
+
+  const grants = JSON.stringify({ [CONTROLLED_HOST_ID]: CONTROLLED_PROPOSALS });
+  return bootstrap.replace(marker, `${marker}    extensionEnabledApiProposals: ${grants},\n`);
+}
+
+async function updateScopedProposalGrants(distPath, installed) {
+  if (installed.filter((extension) => extension.id === CONTROLLED_HOST_ID).length !== 1) {
+    throw new Error('Staging requires exactly one Remotish controlled host.');
+  }
+  const manifest = JSON.parse(
+    await readFile(resolve(distPath, 'extensions', CONTROLLED_HOST_ID, 'package.json'), 'utf8'),
+  );
+  const path = resolve(distPath, 'static-bootstrap.mjs');
+  const bootstrap = await readFile(path, 'utf8');
+  await writeFile(path, withScopedProposalGrants(bootstrap, manifest));
 }
 
 async function updateAdditionalExtensionIndex(distPath, installed) {
