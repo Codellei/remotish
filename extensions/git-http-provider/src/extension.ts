@@ -165,6 +165,17 @@ function registerConfigureCommand(
 
 function registerOpenCommand(context: vscode.ExtensionContext): vscode.Disposable {
   return vscode.commands.registerCommand('remotish.gitHttp.open', async () => {
+    if (!vscode.workspace.getConfiguration('remotish.gitHttp').get('url', '').trim()) {
+      const action = 'Configure Repository';
+      const selected = await vscode.window.showInformationMessage(
+        'Configure a Git HTTP repository before opening it.',
+        action,
+      );
+      if (selected === action) {
+        await vscode.commands.executeCommand('remotish.gitHttp.configure');
+      }
+      return;
+    }
     const { url } = readSettings();
     const result = await vscode.commands.executeCommand<unknown>(
       REMOTISH_ENSURE_REPOSITORY_COMMAND,

@@ -93,6 +93,22 @@ test('provider validates URL-only descriptors and keeps desktop token out of res
   await assert.rejects(provider.restoreWorkspace(ID), /restoration/);
 });
 
+test('Git HTTP open command offers configuration instead of opening an unset remote', async (t) => {
+  vscode.__test.reset();
+  const state = context();
+  activate(state);
+  t.after(() => {
+    for (const item of state.subscriptions) {
+      item.dispose();
+    }
+  });
+
+  await vscode.commands.executeCommand('remotish.gitHttp.open');
+  assert.match(vscode.__test.infoMessages[0], /Configure a Git HTTP repository/u);
+  assert.equal(vscode.__test.externalCommands.length, 0);
+  assert.equal(state.records.size, 0);
+});
+
 test('Web provider stores only a pairing key and does not ask VS Code for a token', async (t) => {
   vscode.__test.reset();
   vscode.env.uiKind = vscode.UIKind.Web;

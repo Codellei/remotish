@@ -5,6 +5,7 @@ import {
 } from '@remotish/adapter-sdk';
 import * as vscode from 'vscode';
 import {
+  createGitHubBootstrapUri,
   GITHUB_BOOTSTRAP_SCHEME,
   GitHubBootstrapFileSystem,
   restoreGitHubWorkspace,
@@ -34,6 +35,7 @@ export function activate(context: vscode.ExtensionContext): RemotishAdapterProvi
   const bootstrap = new GitHubBootstrapFileSystem(context);
   context.subscriptions.push(
     bootstrap,
+    registerOpenCommand(),
     vscode.workspace.registerFileSystemProvider(GITHUB_BOOTSTRAP_SCHEME, bootstrap, {
       isReadonly: true,
     }),
@@ -48,4 +50,36 @@ export function activate(context: vscode.ExtensionContext): RemotishAdapterProvi
     }),
   );
   return createGitHubProvider(context);
+}
+
+/** Keep repository selection in the provider; the bootstrap owns persistence and navigation. */
+function registerOpenCommand(): vscode.Disposable {
+  return vscode.commands.registerCommand('remotish.github.open', async () => {
+    const input = await vscode.window.showInputBox({
+      title: 'Open GitHub Repository',
+      prompt: 'Public repository (owner/repository)',
+      placeHolder: 'octocat/Hello-World',
+    });
+    if (input === undefined) {
+      return;
+    }
+
+    const parts = input.trim().split('/');
+    let repository: ReturnType<typeof decodeGitHubRepository>;
+    try {
+      if (parts.length !== 2) {
+        throw new Error('Invalid repository input');
+      }
+      repository = decodeGitHubRepository({ owner: parts[0] ?? '', repository: parts[1] ?? '' });
+    } catch {
+      await vscode.window.showErrorMessage('Enter a public GitHub repository as owner/repository.');
+      return;
+    }
+
+    await vscode.commands.executeCommand(
+      'vscode.openFolder',
+      vscode.Uri.parse(createGitHubBootstrapUri(repository)),
+      false,
+    );
+  });
 }
