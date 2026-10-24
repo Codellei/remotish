@@ -34,9 +34,16 @@ test('common ruleset keeps PR, required CI and CodeQL gates for everyone', () =>
     { context: 'test (22.23.3)', integration_id: 15368 },
     { context: 'test (24.21.0)', integration_id: 15368 },
   ]);
-  assert.deepEqual(all.rules.find((rule) => rule.type === 'code_scanning').parameters.code_scanning_tools, [
-    { tool: 'CodeQL', security_alerts_threshold: 'medium_or_higher', alerts_threshold: 'errors_and_warnings' },
-  ]);
+  assert.deepEqual(
+    all.rules.find((rule) => rule.type === 'code_scanning').parameters.code_scanning_tools,
+    [
+      {
+        tool: 'CodeQL',
+        security_alerts_threshold: 'medium_or_higher',
+        alerts_threshold: 'errors_and_warnings',
+      },
+    ],
+  );
 });
 
 test('Renovate bypasses only the separate human-review rule', () => {
@@ -47,7 +54,10 @@ test('Renovate bypasses only the separate human-review rule', () => {
   assert.deepEqual(review.bypass_actors, [
     { actor_id: 2740, actor_type: 'Integration', bypass_mode: 'always' },
   ]);
-  assert.deepEqual(review.rules.map((rule) => rule.type), ['pull_request']);
+  assert.deepEqual(
+    review.rules.map((rule) => rule.type),
+    ['pull_request'],
+  );
   const pr = review.rules[0].parameters;
   assert.equal(pr.required_approving_review_count, 1);
   assert.equal(pr.dismiss_stale_reviews_on_push, true);
