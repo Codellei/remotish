@@ -10,7 +10,7 @@ Contributions are welcome when they preserve the project's central boundary: ada
 4. Open a pull request against `master`.
 5. Address CI failures and review feedback before merging.
 
-Changes to `master` are made through pull requests and must satisfy the repository's required checks and review rules.
+Changes to `master` are made through pull requests and must satisfy required CI and CodeQL checks. Human-authored and Dependabot PRs require independent review. The [proposed two-layer branch policy](docs/maintainers/branch-rulesets.md) allows the Renovate GitHub App to bypass only the human-review ruleset, not common checks, once an administrator applies the versioned definitions. Until then, GitHub's existing live ruleset remains in force.
 
 ## Development setup
 
