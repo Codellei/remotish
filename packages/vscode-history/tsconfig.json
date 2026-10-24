@@ -18,6 +18,7 @@
   ],
   "include": ["src/**/*.ts"],
   "files": [
+    "../../types/vscode-proposed/vscode.proposed.scmActionButton.d.ts",
     "../../types/vscode-proposed/vscode.proposed.scmHistoryProvider.d.ts",
     "../../types/vscode-proposed/vscode.proposed.timeline.d.ts"
   ]

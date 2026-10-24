@@ -79,7 +79,7 @@ function registerOpenCommand(): vscode.Disposable {
     await vscode.commands.executeCommand(
       'vscode.openFolder',
       vscode.Uri.parse(createGitHubBootstrapUri(repository)),
-      false,
+      { forceReuseWindow: true },
     );
   });
 }

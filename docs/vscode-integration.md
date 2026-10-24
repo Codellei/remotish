@@ -89,9 +89,13 @@ The explicit `/` root is intentional. VS Code joins resource paths against the w
 await vscode.commands.executeCommand(
   'vscode.openFolder',
   createWorkingUri('customer-config'),
-  false,
+  { forceReuseWindow: true },
 );
 ```
+
+Static browser hosts such as COSW only support navigation within the existing tab. Explicitly
+requesting reuse is required because `forceNewWindow: false` alone still permits a user setting
+to choose a new window; COSW rejects such requests to avoid replacing the current workspace.
 
 You can also register the workspace before activation of an already-open `remotish://` folder, as long as your activation events and adapter construction can resolve the corresponding workspace ID.
 
@@ -102,7 +106,7 @@ const history = new RemotishHistoryHost(host);
 context.subscriptions.push(history);
 ```
 
-`@remotish/vscode` itself uses only stable VS Code APIs. The published Remotish host composes that stable package only. `@remotish/vscode-history` uses proposal-sensitive APIs (`scmHistoryProvider` and `timeline`) and is an optional integration for controlled hosts that explicitly enable those proposals. The repository-controlled `apps/demo-web` host composes both packages for qualification; release packaging instead bundles `apps/demo-web/src/extension-stable.ts` with a staged proposal-free manifest.
+`@remotish/vscode` itself uses only stable VS Code APIs. The published Remotish host composes that stable package only. `@remotish/vscode-history` uses proposal-sensitive APIs (`scmActionButton`, `scmHistoryProvider` and `timeline`) and is an optional integration for controlled hosts that explicitly enable those proposals. The repository-controlled `apps/demo-web` host composes both packages for qualification and ships as the separate `remotish-controlled-host.vsix` GitHub release asset. The Open VSX host `remotish.vsix` instead bundles `apps/demo-web/src/extension-stable.ts` with a staged proposal-free manifest.
 
 Run `pnpm test:vscode-web:stable` to exercise the proposal-free composition under Code-OSS Web with no `enabledApiProposals`. See [Code-OSS integration](code-oss-integration.md) for versioning and distribution constraints.
 

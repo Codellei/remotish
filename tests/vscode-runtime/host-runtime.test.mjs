@@ -72,7 +72,13 @@ test('vscode runtime: demo wires VFS, SCM, branch status and native history prov
   const sourceControl = vscode.__test.sourceControls[0];
   assert.equal(sourceControl.id, 'remotish');
   assert.equal(sourceControl.acceptInputCommand.command, 'remotish.commitAndPush');
-  assert.equal(sourceControl.actionButton, undefined);
+  assert.equal(sourceControl.actionButton.command.command, 'remotish.commitAndPush');
+  assert.deepEqual(sourceControl.actionButton.command.arguments, [FIXTURE_WORKSPACE_ID]);
+  assert.deepEqual(
+    sourceControl.actionButton.secondaryCommands[0].map((item) => item.command),
+    ['remotish.commitAndPushForceWithLease', 'remotish.amendAndPushForceWithLease'],
+  );
+  assert.ok(sourceControl.actionButton.enabled);
   assert.deepEqual(
     sourceControl.__groups.map((group) => group.id),
     ['staged', 'changes'],
@@ -86,6 +92,7 @@ test('vscode runtime: demo wires VFS, SCM, branch status and native history prov
     (item) => item.command === 'vscode.openFolder',
   );
   assert.equal(opened?.args[0].toString(), `remotish://${FIXTURE_WORKSPACE_ID}/`);
+  assert.deepEqual(opened?.args[1], { forceReuseWindow: true });
 });
 
 test('vscode runtime: Timeline shows repository commits for the active file', async (t) => {

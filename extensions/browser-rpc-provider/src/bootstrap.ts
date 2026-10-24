@@ -185,7 +185,7 @@ export class BrowserRpcBootstrapFileSystem implements vscode.FileSystemProvider,
       await vscode.commands.executeCommand(
         'vscode.openFolder',
         vscode.Uri.from({ scheme: 'remotish', authority: workspaceId, path: '/' }),
-        false,
+        { forceReuseWindow: true },
       );
     });
     this.finalizationTail = finalize.then(
