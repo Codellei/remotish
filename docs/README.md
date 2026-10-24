@@ -30,6 +30,7 @@ and [provider](../extensions/git-http-provider/README.md).
 ## Maintainers
 
 - [Development](maintainers/development.md) - local setup, checks and repository conventions.
+- [Branch protection and Renovate](maintainers/branch-rulesets.md) - two-layer GitHub rulesets and administrator application.
 - [Documentation maintenance](maintainers/documentation.md) - canonical-source and link rules.
 - [Release security](release-security.md) - release gates, checksums, SBOM and attestations.
 
